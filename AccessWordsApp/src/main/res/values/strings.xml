@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AccessWordsApp</string>
+    <string name="word">Word</string>
+    <string name="meaning">Meaning</string>
+    <string name="sample">Sample</string>
+    <string name="search">ID</string>
+</resources>

@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="computer.bistu.edu.wordtext.activity.MainActivity">
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="@string/action_search"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_insert"
+        android:orderInCategory="100"
+        android:title="@string/action_insert"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_inert1"
+        android:orderInCategory="100"
+        android:title="@string/action_insert1"
+        app:showAsAction="never" />
+</menu>
