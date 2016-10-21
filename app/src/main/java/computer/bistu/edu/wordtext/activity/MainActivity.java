@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,6 +98,10 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
             case R.id.action_inert1:
                 InsertDialog(2);
                 return true;
+            case R.id.action_log:
+                Intent intent = new Intent(MainActivity.this, MainLogActivity.class);
+                startActivity(intent);
+                return true;
         }
 
 
@@ -152,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
                                 super.handleMessage(msg);
                                 Words.WordAttribute wordAttribute = (Words.WordAttribute) msg.obj;
                                 WordDatabase wordsDB = WordDatabase.getDatabase();
-                                wordsDB.InsertUserSql(GUID.getGUID(), wordAttribute.word, wordAttribute.meaning, wordAttribute.sample);
+                                wordsDB.InsertUserSql(GUID.getGUID(), wordAttribute.word, wordAttribute.meaning, wordAttribute.sample, 1);
                                 //单词已经插入到数据库，更新显示列表
                                 RefreshWordItemFragment();
                             }
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         WordDatabase wordsDB = WordDatabase.getDatabase();
-                        wordsDB.DeleteUseSql(strId);
+                        wordsDB.DeleteUseSql(strId, 1);
 
                         //单词已经删除，更新显示列表
                         RefreshWordItemFragment();
@@ -363,9 +368,23 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
     }
 
     @Override
+    public void onAddToLog(String strId) {
+        WordDatabase wordsDB = WordDatabase.getDatabase();
+        if (wordsDB != null && strId != null) {
+            Words.WordAttribute item = wordsDB.getSingleWord(strId);
+            if (item != null) {
+                AddWordLogToDB(strId, item.word, item.meaning, item.sample);
+            }
+        }
+    }
+
+    private void AddWordLogToDB(String strId, String word, String meaning, String sample) {
+        WordDatabase wordsDB = WordDatabase.getDatabase();
+        wordsDB.InsertUserSql(strId, word, meaning, sample, 2);
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-
 }

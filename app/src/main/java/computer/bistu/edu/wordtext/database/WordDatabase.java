@@ -50,10 +50,15 @@ public class WordDatabase {
 
     }
 
-    public boolean getWord(String word) {
+    public boolean getWord(String word, int type) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        String sql = "select * from words where word=?";
+        String sql;
+        if (type == 1) {
+            sql = "select * from words where word=?";
+        } else {
+            sql = "select * from words_log where word=?";
+        }
         Cursor cursor = db.rawQuery(sql, new String[]{word});
         if (cursor.moveToNext()) {
             return true;
@@ -62,7 +67,7 @@ public class WordDatabase {
     }
 
     //得到全部单词列表
-    public ArrayList<Map<String, String>> getAllWords() {
+    public ArrayList<Map<String, String>> getAllWords(int type) {
         if (helper == null) {
             return null;
         }
@@ -78,9 +83,15 @@ public class WordDatabase {
         String sortOrder =
                 Words.Word.COLUMN_NAME_WORD + " ASC";
 
+        String tableName = "";
+        if (type == 1) {
+            tableName = Words.Word.TABLE_NAME;
+        } else {
+            tableName = Words.Word.TABLE_NAME_LOG;
+        }
 
         Cursor c = db.query(
-                Words.Word.TABLE_NAME,  // The table to query
+                tableName,  // The table to query
                 projection,                               // The columns to return
                 null,                                // The columns for the WHERE clause
                 null,                            // The values for the WHERE clause
@@ -106,12 +117,17 @@ public class WordDatabase {
     }
 
     //使用Sql语句插入单词
-    public void InsertUserSql(String id, String strWord, String strMeaning, String strSample) {
-        String sql = "insert into  words(_id,word,meaning,sample) values(?,?,?,?)";
+    public void InsertUserSql(String id, String strWord, String strMeaning, String strSample, int type) {
+        String sql;
+        if (type == 1) {
+            sql = "insert into  words(_id,word,meaning,sample) values(?,?,?,?)";
+        } else {
+            sql = "insert into  words_log(_id,word,meaning,sample) values(?,?,?,?)";
+        }
 
         //Gets the data repository in write mode*/
         /*判断单词是否已经存在*/
-        if (!getWord(strWord)) {
+        if (!getWord(strWord, type)) {
             SQLiteDatabase db = helper.getWritableDatabase();
             db.execSQL(sql, new String[]{id, strWord, strMeaning, strSample});
         }
@@ -119,8 +135,13 @@ public class WordDatabase {
 
 
     //使用Sql语句删除单词
-    public void DeleteUseSql(String strId) {
-        String sql = "delete from words where _id='" + strId + "'";
+    public void DeleteUseSql(String strId, int type) {
+        String sql;
+        if (type == 1) {
+            sql = "delete from words where _id='" + strId + "'";
+        } else {
+            sql = "delete from words_log where _id='" + strId + "'";
+        }
 
         //Gets the data repository in write mode*/
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -137,10 +158,14 @@ public class WordDatabase {
 
 
     //使用Sql语句查找
-    public ArrayList<Map<String, String>> SearchUseSql(String strWordSearch) {
+    public ArrayList<Map<String, String>> SearchUseSql(String strWordSearch, int type) {
         SQLiteDatabase db = helper.getReadableDatabase();
-
-        String sql = "select * from words where word like ? order by word asc";
+        String sql;
+        if (type == 1) {
+            sql = "select * from words where word like ? order by word asc";
+        } else {
+            sql = "select * from words_log where word like ? order by word asc";
+        }
         Cursor c = db.rawQuery(sql, new String[]{"%" + strWordSearch + "%"});
 
         return ConvertCursor2WordList(c);

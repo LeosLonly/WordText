@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -93,7 +94,7 @@ public class WordItemFragment extends ListFragment {
     public void refreshWordsList() {
         WordDatabase wordsDB = WordDatabase.getDatabase();
         if (wordsDB != null) {
-            ArrayList<Map<String, String>> items = wordsDB.getAllWords();
+            ArrayList<Map<String, String>> items = wordsDB.getAllWords(1);
 
             SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.fragment_worditem,
                     new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
@@ -116,7 +117,7 @@ public class WordItemFragment extends ListFragment {
                 }
             };
 
-            final ArrayList<Map<String, String>> items = wordsDB.SearchUseSql(strWord);
+            final ArrayList<Map<String, String>> items = wordsDB.SearchUseSql(strWord, 1);
             url = basicUrl + "keyfrom=" + keyfrom + "&key=" + key
                     + "&type=" + Type + "&doctype=" + doctype + "&version=" + version + "&q=" + strWord;
             final Map<String, String> map = new HashMap<>();
@@ -128,7 +129,7 @@ public class WordItemFragment extends ListFragment {
                     map.put(Words.Word.COLUMN_NAME_WORD, response.word);
                     if (items.size() <= 0) {
                         items.add(map);
-                        wordsDB.InsertUserSql(GUID.getGUID(), response.word, response.meaning, response.sample);
+                        wordsDB.InsertUserSql(GUID.getGUID(), response.word, response.meaning, response.sample, 1);
                     }
                     SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.fragment_worditem,
                             new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
@@ -186,6 +187,16 @@ public class WordItemFragment extends ListFragment {
                     mListener.onUpdateDialog(strId);
                 }
                 break;
+            case R.id.action_jsb:
+                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                itemView = info.targetView;
+                textId = (TextView) itemView.findViewById(R.id.textId);
+
+                if (textId != null) {
+                    String strId = textId.getText().toString();
+                    mListener.onAddToLog(strId);
+                }
+                break;
         }
         return true;
     }
@@ -197,6 +208,7 @@ public class WordItemFragment extends ListFragment {
         if (null != mListener) {
             TextView textView = (TextView) v.findViewById(R.id.textId);
             if (textView != null) {
+                Log.e("JJ", "LLLL111");
                 mListener.onWordItemClick(textView.getText().toString());
             }
         }
@@ -215,6 +227,8 @@ public class WordItemFragment extends ListFragment {
         void onDeleteDialog(String strId);
 
         void onUpdateDialog(String strId);
+
+        void onAddToLog(String strId);
 
     }
 }

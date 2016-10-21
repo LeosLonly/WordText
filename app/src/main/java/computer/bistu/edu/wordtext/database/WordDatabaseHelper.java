@@ -3,6 +3,7 @@ package computer.bistu.edu.wordtext.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import computer.bistu.edu.wordtext.Words.Words;
 
@@ -21,16 +22,16 @@ public class WordDatabaseHelper extends SQLiteOpenHelper {
             Words.Word.COLUMN_NAME_MEANING + " TEXT,"
             + Words.Word.COLUMN_NAME_SAMPLE + " TEXT)";
 
+    private final static String SQL_CREATE_DATABASE_LOG = "CREATE TABLE " + Words.Word.TABLE_NAME_LOG + " (" +
+            Words.Word._ID + " VARCHAR(32) PRIMARY KEY NOT NULL," +
+            Words.Word.COLUMN_NAME_WORD + " TEXT UNIQUE NOT NULL," +
+            Words.Word.COLUMN_NAME_MEANING + " TEXT,"
+            + Words.Word.COLUMN_NAME_SAMPLE + " TEXT)";
 
-    /*private static final String SQL_CREATE_DATABASE = "create table "
-            + Words.Word.TABLE_NAME
-            + "(" + Words.Word._ID + " integer primary key autoincrement,"
-            + Words.Word.COLUMN_NAME_WORD + " text" + ","
-            + Words.Word.COLUMN_NAME_MEANING + " text" + ","
-            + Words.Word.COLUMN_NAME_SAMPLE + " text" + ")";*/
 
     //删表SQL
     private final static String SQL_DELETE_DATABASE = "DROP TABLE IF EXISTS " + Words.Word.TABLE_NAME;
+    private final static String SQL_DELETE_DATABASE_LOG = "DROP TABLE IF EXISTS " + Words.Word.TABLE_NAME_LOG;
 
     public WordDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,11 +40,14 @@ public class WordDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_DATABASE);
+        Log.e(TAG, SQL_CREATE_DATABASE_LOG);
+        sqLiteDatabase.execSQL(SQL_CREATE_DATABASE_LOG);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(SQL_DELETE_DATABASE);
+        sqLiteDatabase.execSQL(SQL_DELETE_DATABASE_LOG);
         onCreate(sqLiteDatabase);
     }
 }

@@ -9,4 +9,7 @@
         android:id="@+id/action_update"
         android:title="@string/action_update" />
 
+    <item
+        android:id="@+id/action_jsb"
+        android:title="@string/action_log" />
 </menu>

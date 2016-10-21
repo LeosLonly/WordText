@@ -20,4 +20,10 @@
         android:orderInCategory="100"
         android:title="@string/action_insert1"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_log"
+        android:orderInCategory="100"
+        android:title="@string/action_log"
+        app:showAsAction="never" />
 </menu>

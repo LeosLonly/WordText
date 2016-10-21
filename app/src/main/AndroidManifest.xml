@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="computer.bistu.edu.wordtext">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".WordsApplication"
         android:allowBackup="true"
@@ -19,13 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WordDetailActivity"></activity>
+        <activity android:name=".activity.WordDetailActivity" />
 
         <provider
             android:name=".MyWordProvider"
             android:authorities="computer.bistu.edu.wordsprovider2"
             android:enabled="true"
             android:exported="true" />
+
+        <activity android:name=".activity.MainLogActivity"></activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
