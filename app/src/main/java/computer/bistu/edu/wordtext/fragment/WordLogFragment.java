@@ -65,19 +65,22 @@ public class WordLogFragment extends ListFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         mListener = (WordLogFragment.OnLogListFragmentInteractionListener) getActivity();
-        TextView textId;
 
-        AdapterView.AdapterContextMenuInfo info;
-        View itemView;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        View itemView = info.targetView;
+        TextView textId = (TextView) itemView.findViewById(R.id.textId);
 
         switch (item.getItemId()) {
             case R.id.action_delete_log:
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                itemView = info.targetView;
-                textId = (TextView) itemView.findViewById(R.id.textId);
                 if (textId != null) {
                     String strId = textId.getText().toString();
                     mListener.onDeleteDialog(strId);
+                }
+                break;
+            case R.id.action_wordDY_log:
+                if (textId != null) {
+                    String strId = textId.getText().toString();
+                    mListener.onWordLogDY(strId);
                 }
                 break;
         }
@@ -134,5 +137,7 @@ public class WordLogFragment extends ListFragment {
         void onWordItemClick(String id);
 
         void onDeleteDialog(String strId);
+
+        void onWordLogDY(String strId);
     }
 }

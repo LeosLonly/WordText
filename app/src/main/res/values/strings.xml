@@ -6,6 +6,7 @@
     <string name="action_insert">新增</string>
     <string name="action_insert1">网络</string>
     <string name="action_log">记事本</string>
+    <string name="action_DY">读音</string>
     <string name="action_delete">删除</string>
     <string name="action_update">修改</string>
     <string name="action_ok">确定</string>

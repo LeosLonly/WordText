@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import java.io.File;
+import java.io.IOException;
 
 import computer.bistu.edu.wordtext.HttpCallBack;
 import computer.bistu.edu.wordtext.HttpCallBackListener;
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
     private final String doctype = "json";
     private final String Type = "data";
     private final String version = "1.1";
+    private MediaPlayer player = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
         WordDatabase wordsDB = WordDatabase.getDatabase();
         if (wordsDB != null)
             wordsDB.close();
-
     }
 
 
@@ -187,6 +192,11 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
 
                                 @Override
                                 public void onError(Exception e) {
+
+                                }
+
+                                @Override
+                                public void onWordDY() {
 
                                 }
                             });
@@ -375,6 +385,61 @@ public class MainActivity extends AppCompatActivity implements WordFragment.OnFr
             if (item != null) {
                 AddWordLogToDB(strId, item.word, item.meaning, item.sample);
             }
+        }
+    }
+
+    @Override
+    public void onWordDY(String strId) {
+        WordDatabase wordsDB = WordDatabase.getDatabase();
+        if (wordsDB != null && strId != null) {
+            Words.WordAttribute item = wordsDB.getSingleWord(strId);
+            if (item.word != null) {
+                String url = "http://dict.youdao.com/dictvoice?audio=" + item.word;
+                AddWordDY(url);
+            }
+        }
+    }
+
+    private void AddWordDY(String url) {
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                init();
+            }
+        };
+
+        HttpCallBack.responseWordDY(url, new HttpCallBackListener() {
+            @Override
+            public void onFinish(Words.WordAttribute response) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onWordDY() {
+                handler.sendEmptyMessage(0);
+            }
+        });
+
+    }
+
+    private void init() {
+        final File file = new File(Environment.getExternalStorageDirectory(), "a1.mp3");
+        player.reset();
+        try {
+            player.setDataSource(file.getPath());
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            file.delete();
         }
     }
 

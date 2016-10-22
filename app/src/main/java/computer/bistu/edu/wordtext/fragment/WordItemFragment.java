@@ -143,6 +143,11 @@ public class WordItemFragment extends ListFragment {
                 public void onError(Exception e) {
 
                 }
+
+                @Override
+                public void onWordDY() {
+
+                }
             });
 
         }
@@ -160,17 +165,18 @@ public class WordItemFragment extends ListFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         mListener = (OnListFragmentInteractionListener) getActivity();
-        TextView textId;
 
-        AdapterView.AdapterContextMenuInfo info;
-        View itemView;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ;
+        View itemView = info.targetView;
+        ;
+        TextView textId = (TextView) itemView.findViewById(R.id.textId);
+        ;
 
         switch (item.getItemId()) {
             case R.id.action_delete:
                 //删除单词
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                itemView = info.targetView;
-                textId = (TextView) itemView.findViewById(R.id.textId);
+
                 if (textId != null) {
                     String strId = textId.getText().toString();
                     mListener.onDeleteDialog(strId);
@@ -178,23 +184,21 @@ public class WordItemFragment extends ListFragment {
                 break;
             case R.id.action_update:
                 //修改单词
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                itemView = info.targetView;
-                textId = (TextView) itemView.findViewById(R.id.textId);
-
                 if (textId != null) {
                     String strId = textId.getText().toString();
                     mListener.onUpdateDialog(strId);
                 }
                 break;
             case R.id.action_jsb:
-                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                itemView = info.targetView;
-                textId = (TextView) itemView.findViewById(R.id.textId);
-
                 if (textId != null) {
                     String strId = textId.getText().toString();
                     mListener.onAddToLog(strId);
+                }
+                break;
+            case R.id.action_DY:
+                if (textId != null) {
+                    String strId = textId.getText().toString();
+                    mListener.onWordDY(strId);
                 }
                 break;
         }
@@ -208,7 +212,6 @@ public class WordItemFragment extends ListFragment {
         if (null != mListener) {
             TextView textView = (TextView) v.findViewById(R.id.textId);
             if (textView != null) {
-                Log.e("JJ", "LLLL111");
                 mListener.onWordItemClick(textView.getText().toString());
             }
         }
@@ -229,6 +232,8 @@ public class WordItemFragment extends ListFragment {
         void onUpdateDialog(String strId);
 
         void onAddToLog(String strId);
+
+        void onWordDY(String strId);
 
     }
 }

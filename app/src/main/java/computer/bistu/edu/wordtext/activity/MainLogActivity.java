@@ -3,7 +3,11 @@ package computer.bistu.edu.wordtext.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +16,11 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.IOException;
+
+import computer.bistu.edu.wordtext.HttpCallBack;
+import computer.bistu.edu.wordtext.HttpCallBackListener;
 import computer.bistu.edu.wordtext.R;
 import computer.bistu.edu.wordtext.Words.Words;
 import computer.bistu.edu.wordtext.WordsApplication;
@@ -22,6 +31,8 @@ import computer.bistu.edu.wordtext.fragment.WordLogFragment;
 
 public class MainLogActivity extends AppCompatActivity implements WordFragment.OnFragmentInteractionListener,
         WordLogFragment.OnLogListFragmentInteractionListener {
+
+    private MediaPlayer player = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +113,61 @@ public class MainLogActivity extends AppCompatActivity implements WordFragment.O
     @Override
     public void onDeleteDialog(String strId) {
         DeleteDialog(strId);
+    }
+
+    @Override
+    public void onWordLogDY(String strId) {
+        WordDatabase wordsDB = WordDatabase.getDatabase();
+        if (wordsDB != null && strId != null) {
+            Words.WordAttribute item = wordsDB.getSingleWord(strId);
+            if (item.word != null) {
+                String url = "http://dict.youdao.com/dictvoice?audio=" + item.word;
+                AddWordDY(url);
+            }
+        }
+    }
+
+    private void AddWordDY(String url) {
+
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                init();
+            }
+        };
+
+        HttpCallBack.responseWordDY(url, new HttpCallBackListener() {
+            @Override
+            public void onFinish(Words.WordAttribute response) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onWordDY() {
+                handler.sendEmptyMessage(0);
+            }
+        });
+
+    }
+
+    private void init() {
+        final File file = new File(Environment.getExternalStorageDirectory(), "a1.mp3");
+        player.reset();
+        try {
+            player.setDataSource(file.getPath());
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            file.delete();
+        }
     }
 
     private void DeleteDialog(final String strId) {

@@ -11,4 +11,6 @@ public interface HttpCallBackListener {
     void onFinish(Words.WordAttribute response);
 
     void onError(Exception e);
+
+    void onWordDY();
 }

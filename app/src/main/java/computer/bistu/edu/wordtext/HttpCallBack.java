@@ -1,12 +1,16 @@
 package computer.bistu.edu.wordtext;
 
+import android.os.Environment;
 import android.os.Message;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -92,6 +96,36 @@ public class HttpCallBack {
                     if (listener != null) {
                         listener.onError(e);
                     }
+                }
+            }
+        }).start();
+    }
+
+    public static void responseWordDY(final String url, final HttpCallBackListener listener) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url1 = new URL(url);
+                    Object o = url1.getContent();
+                    InputStream ip = (InputStream) o;
+                    byte[] b = new byte[20];
+                    File file = new File(Environment.getExternalStorageDirectory(), "a1.mp3");
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    FileOutputStream fout = new FileOutputStream(file);
+                    while (ip.read(b) != -1) {
+                        fout.write(b);
+                    }
+                    ip.close();
+                    fout.close();
+                    if (listener != null) {
+                        listener.onWordDY();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
